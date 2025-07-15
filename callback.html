@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Redirecting...</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+      }
+      .container {
+        padding: 2rem;
+        max-width: 400px;
+      }
+      .spinner {
+        border: 3px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top: 3px solid white;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .fallback {
+        display: none;
+        margin-top: 2rem;
+      }
+      .button {
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 1rem;
+        font-weight: 500;
+      }
+    </style>
+    <script>
+      function redirectToApp() {
+        const params = window.location.search;
+        
+        // Try multiple redirect methods
+        const redirectMethods = [
+          // Method 1: Custom scheme
+          'safebot://auth/callback' + params,
+          // Method 2: Expo development URL
+          'exp://192.168.0.3:8081/--/auth/callback' + params,
+          // Method 3: Localhost development URL
+          'exp://localhost:8081/--/auth/callback' + params
+        ];
+        
+        let currentMethod = 0;
+        
+        function tryNextMethod() {
+          if (currentMethod < redirectMethods.length) {
+            const url = redirectMethods[currentMethod];
+            console.log('Trying redirect method:', url);
+            
+            try {
+              window.location.href = url;
+            } catch (e) {
+              console.log('Redirect failed:', e);
+            }
+            
+            currentMethod++;
+            setTimeout(tryNextMethod, 500);
+          } else {
+            // All methods failed, show fallback
+            document.getElementById('fallback').style.display = 'block';
+          }
+        }
+        
+        tryNextMethod();
+      }
+      
+      // Start redirect immediately
+      window.onload = function() {
+        redirectToApp();
+      };
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="spinner"></div>
+      <p>Redirecting to SafeBot...</p>
+      
+      <div id="fallback" class="fallback">
+        <p>If you're not redirected automatically, tap the button below:</p>
+        <a href="#" onclick="redirectToApp(); return false;" class="button">
+          Open SafeBot App
+        </a>
+      </div>
+    </div>
+  </body>
+</html> 
