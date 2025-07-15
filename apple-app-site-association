@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAM_ID.com.safebot.app",
+        "paths": ["/auth/callback*"]
+      }
+    ]
+  }
+} 
